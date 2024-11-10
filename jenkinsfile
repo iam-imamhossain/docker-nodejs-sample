@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'docker:24.0'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Proper Docker socket mount
+            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
         }
     }
     environment {
@@ -19,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image'
-                sh 'cd docker-nodejs-sample && docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .' // Build Docker image
+                sh 'docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .' // Run docker build in the current workspace
             }
         }
         stage('Build Complete') {
