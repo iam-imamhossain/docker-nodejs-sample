@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:24.0'
+            image 'node:latest'
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
         }
     }
@@ -14,6 +14,17 @@ pipeline {
             steps {
                 echo "Checking out source code"
                 git branch: 'main', url: 'https://github.com/iam-imamhossain/docker-nodejs-sample.git'
+            }
+        }
+        stage('build and test'){
+            steps{
+                echo 'colde build'
+                sh 'yarn install --production'
+                sh '''
+                npm install eslint --save-dev
+                npx eslint --init
+                npx eslint . --max-warnings 0
+                '''
             }
         }
         stage('Build Docker Image') {
