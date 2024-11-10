@@ -1,0 +1,31 @@
+pipline {
+    agent{
+        docker{
+            image 'docker:24.0'
+            args '/var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+    environment {
+        DOCKER_IMAGE_NAME = 'imam2000/node-sample'
+        DOCKER_TAG = 'latest'
+    }
+    stages {
+        stage('checkout'){
+            steps {
+                echo "checking out source code"
+                git branch: 'main', url: 'https://github.com/iam-imamhossain/docker-nodejs-sample.git'
+            }
+        }
+        stage('Build Docker image'){
+            steps{
+                echo 'Building Docker image'
+                sh 'cd docker-nodejs-sample && docker build -t ${DOCKER_IMAGE_NAME} .'
+            }
+        }
+        stage("build"){
+            steps{
+                echo "build complite"
+            }
+        }
+    }
+}
