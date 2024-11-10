@@ -1,31 +1,43 @@
-pipline {
-    agent{
-        docker{
+pipeline {
+    agent {
+        docker {
             image 'docker:24.0'
-            args '/var/run/docker.sock:/var/run/docker.sock'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Proper Docker socket mount
         }
     }
     environment {
-        DOCKER_IMAGE_NAME = 'imam2000/node-sample'
-        DOCKER_TAG = 'latest'
+        DOCKER_IMAGE_NAME = 'imam2000/node-sample' // Docker image name
+        DOCKER_TAG = 'latest' // Docker image tag
     }
     stages {
-        stage('checkout'){
+        stage('Checkout') {
             steps {
-                echo "checking out source code"
+                echo "Checking out source code"
                 git branch: 'main', url: 'https://github.com/iam-imamhossain/docker-nodejs-sample.git'
             }
         }
-        stage('Build Docker image'){
-            steps{
+        stage('Build Docker Image') {
+            steps {
                 echo 'Building Docker image'
-                sh 'cd docker-nodejs-sample && docker build -t ${DOCKER_IMAGE_NAME} .'
+                sh 'docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .' // Build Docker image
             }
         }
-        stage("build"){
-            steps{
-                echo "build complite"
+        stage('Build Complete') {
+            steps {
+                echo "Build complete"
             }
+        }
+    }
+    post {
+        always {
+            echo "Cleaning up..."
+            cleanWs() // Clean workspace
+        }
+        success {
+            echo "Pipeline completed successfully."
+        }
+        failure {
+            echo "Pipeline failed."
         }
     }
 }
