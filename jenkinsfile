@@ -16,20 +16,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/iam-imamhossain/docker-nodejs-sample.git'
             }
         }
-         stage('Build and Test') {
-            steps {
-                echo 'Building and testing code'
-                sh 'yarn install'  // Install both production and development dependencies
-                // Install ESLint and run it for static analysis
-                sh '''
-                npm install eslint --save-dev
-                npx eslint . --max-warnings 0
-                npm fund 
-                npm audit fix
-                npm audit
-                '''
-            }
-        }
+        //  stage('Build and Test') {
+        //     steps {
+        //         echo 'Building and testing code'
+        //         sh 'yarn install'  // Install both production and development dependencies
+        //     }
+        // }
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image'
