@@ -6,8 +6,10 @@ pipeline {
         }
     }
     environment {
-        DOCKER_IMAGE_NAME = 'imam2000/node-sample' // Docker image name
+        DOCKER_IMAGE = 'imam2000/node-sample:${DOCKER_TAG}' // Docker image name
         DOCKER_TAG = 'latest' // Docker image tag
+        DOCKER_TOKEN_CREDENTIALS_ID = 'docker_id'
+        DOCKER_USERNAME = 'imam2000'
     }
     stages {
         stage('Checkout') {
@@ -33,7 +35,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image'
-                sh 'docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .' // Run docker build in the current workspace
+                sh 'docker build -t ${DOCKER_IMAGE} .' // Run docker build in the current workspace
             }
         }
         stage('Build Complete') {
@@ -41,6 +43,16 @@ pipeline {
                 echo "Build complete"
             }
         }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Login using token
+                    withCredentials([string(credentialsId: "$DOCKER_TOKEN_CREDENTIALS_ID", variable: 'DOCKER_TOKEN')]) {
+                        sh "echo $DOCKER_TOKEN | docker login --username $DOCKER_USERNAME --password-stdin"
+                        sh 'docker push $DOCKER_IMAGE'
+                    }
+                }
+            }
     }
     post {
         always {
