@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:latest'
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
-        }
-    }
+    agent any
+    // agent {
+    //     docker {
+    //         image 'node:latest'
+    //         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+    //     }
+    // }
     environment {
         DOCKER_IMAGE = 'imam2000/node-sample:${DOCKER_TAG}' // Docker image name
         DOCKER_TAG = 'latest' // Docker image tag
@@ -14,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "Checking out source code"
+                echo 'Checking out source code'
                 git branch: 'main', url: 'https://github.com/iam-imamhossain/docker-nodejs-sample.git'
             }
         }
@@ -26,7 +27,7 @@ pipeline {
         //         sh '''
         //         npm install eslint --save-dev
         //         npx eslint . --max-warnings 0
-        //         npm fund 
+        //         npm fund
         //         npm audit fix
         //         npm audit
         //         '''
@@ -40,7 +41,7 @@ pipeline {
         }
         stage('Build Complete') {
             steps {
-                echo "Build complete"
+                echo 'Build complete'
             }
         }
         stage('Push Docker Image') {
@@ -54,17 +55,17 @@ pipeline {
                 }
             }
         }
-    } 
+    }
     post {
         always {
-            echo "Cleaning up..."
+            echo 'Cleaning up...'
             cleanWs() // Clean workspace
         }
         success {
-            echo "Pipeline completed successfully."
+            echo 'Pipeline completed successfully.'
         }
         failure {
-            echo "Pipeline failed."
+            echo 'Pipeline failed.'
         }
     }
 }
