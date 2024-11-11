@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'  // Install Node.js dependencies
+                sh 'yarn install --production'  // Install Node.js dependencies
             }
         }
         stage('Run Tests') {
